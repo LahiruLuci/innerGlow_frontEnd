@@ -5,7 +5,7 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import FemaleSpeakers from "../voices";
-import AvatarModel from "../AvatarModels/AvatarModel"; // Your avatar 3D model
+import AvatarModel from "../AvatarModels/AvatarModel"; 
 
 export default function Avatar() {
   const [visemeIndex, setVisemeIndex] = useState<number>(0);
@@ -15,12 +15,12 @@ export default function Avatar() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const modelRef = useRef<any>(); // Ref for the group container of the avatar model
-  const cameraPosition: [number, number, number] = [0, 1, 25]; // Camera position
-  const lightIntensity: number = 0.7; // Light intensity
+  const modelRef = useRef<any>(); 
+  const cameraPosition: [number, number, number] = [0, 1, 25]; 
+  const lightIntensity: number = 0.7;
 
-  const SpeechKey = "GKEDI2f9XZ55KsFdm4Eu2deRIjqBvswbGOAhp6KnHGnJF4CJZLm1JQQJ99BBACYeBjFXJ3w3AAAYACOGMJWB"; 
-  const SpeechRegion = "eastus"; 
+  const SpeechKey = "GKEDI2f9XZ55KsFdm4Eu2deRIjqBvswbGOAhp6KnHGnJF4CJZLm1JQQJ99BBACYeBjFXJ3w3AAAYACOGMJWB";
+  const SpeechRegion = "eastus";
 
   const synthesizeSpeech = (text: string) => {
     const speechConfig = sdk.SpeechConfig.fromSubscription(SpeechKey, SpeechRegion);
@@ -81,7 +81,7 @@ export default function Avatar() {
     try {
       setLoading(true);
       setError("");
-      
+
       const response = await fetch("http://localhost:5000/chat", {
         method: "POST",
         headers: {
@@ -89,14 +89,14 @@ export default function Avatar() {
         },
         body: JSON.stringify({ message }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Bot response:", data.response);
-      
+
       setSubtitles(data.response);
       synthesizeSpeech(data.response);
     } catch (err) {
@@ -119,145 +119,150 @@ export default function Avatar() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <h1>My Supportive Avatar</h1>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label htmlFor="voice-select" style={{ marginRight: "10px" }}>Select Voice: </label>
-        <select 
-          id="voice-select" 
-          value={selectedVoice} 
-          onChange={(e) => setSelectedVoice(e.target.value)}
+    <div style={{ display: "flex", alignItems: "center", gap: "40px", padding: "20px", margin: "100px 0 250px 250px" }}>
+      {/* Left Side - Avatar Container */}
+      <div style={{ flex: "0 0 auto" }}>
+        <div
+          style={{
+            width: "440px",
+            height: "440px",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            borderRadius: "10px",
+            position: "relative",
+            overflow: "hidden",
+            boxShadow: "0 0 30px rgba(0, 78, 146, 0.7)",
+          }}
         >
-          {FemaleSpeakers.map((voice) => (
-            <option key={voice.value} value={voice.value}>
-              {voice.label}
-            </option>
-          ))}
-        </select>
+          <Canvas
+            camera={{ position: cameraPosition, fov: 36, near: 0.1, far: 1000 }}
+            shadows
+          >
+            <ambientLight intensity={lightIntensity} />
+            <spotLight
+              position={[15, 10, 35]}
+              angle={0.3}
+              penumbra={1}
+              castShadow
+              intensity={lightIntensity}
+            />
+            <pointLight position={[10, 10, 10]} intensity={lightIntensity * 1000} />
+
+            {/* Group with avatar model positioned and scaled to show the shoulder/upper area */}
+            <group ref={modelRef} scale={0.11} position={[0, -5, 0]} rotation={[0, 0, 0]}>
+              <AvatarModel visemeIndex={visemeIndex} />
+            </group>
+
+            <OrbitControls
+              enableZoom={true}
+              enablePan={true}
+              enableRotate={true}
+              target={[0, 0, 0]}
+              minDistance={1}
+              maxDistance={10}
+            />
+          </Canvas>
+        </div>
       </div>
 
-      {/* 3D Avatar Container for Shoulder/Upper Position */}
-      <div
-        style={{
-          width: "440px",
-          height: "440px",
-          backgroundColor: "rgba(0,0,0,0.4)",
-          borderRadius: "10px",
-          position: "relative",
-          overflow: "hidden",
-          boxShadow: "0 0 30px rgba(0, 78, 146, 0.7)",
-          marginBottom: "20px",
-        }}
-      >
-        <Canvas
-          camera={{ position: cameraPosition, fov: 36, near: 0.1, far: 1000 }}
-          shadows
+      {/* Right Side - Controls and Interface */}
+      <div style={{ flex: "1", display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: "20px" }}>
+        
+        {/* Voice Selection */}
+        <div style={{ marginBottom: "20px", width: "100%" }}>
+          <label htmlFor="voice-select" style={{ marginRight: "10px" }}>Select Voice: </label>
+          <select 
+            id="voice-select" 
+            value={selectedVoice} 
+            onChange={(e) => setSelectedVoice(e.target.value)}
+          >
+            {FemaleSpeakers.map((voice) => (
+              <option key={voice.value} value={voice.value}>
+                {voice.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Subtitles/Response Area */}
+        <div
+          style={{
+            marginBottom: "20px",
+            maxWidth: "500px",
+            width: "100%",
+            textAlign: "center",
+            fontSize: "18px",
+            padding: "15px",
+            backgroundColor: "black",
+            color: "white",
+            borderRadius: "5px",
+            minHeight: "80px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+          aria-live="polite"
         >
-          <ambientLight intensity={lightIntensity} />
-          <spotLight
-            position={[15, 10, 35]}
-            angle={0.3}
-            penumbra={1}
-            castShadow
-            intensity={lightIntensity}
-          />
-          <pointLight position={[10, 10, 10]} intensity={lightIntensity * 1000} />
-          
-          {/* Group with avatar model positioned and scaled to show the shoulder/upper area */}
-          <group ref={modelRef} scale={0.11} position={[0, -5, 0]} rotation={[0, 0, 0]}>
-            <AvatarModel visemeIndex={visemeIndex} />
-          </group>
-          
-          <OrbitControls
-            enableZoom={true}
-            enablePan={true}
-            enableRotate={true}
-            target={[0, 0, 0]}
-            minDistance={1}
-            maxDistance={10}
-          />
-        </Canvas>
-      </div>
+          {loading ? "Thinking..." : subtitles}
+        </div>
 
-      {/* Subtitles/Response Area */}
-      <div
-        style={{
-          marginBottom: "20px",
-          maxWidth: "500px",
-          width: "100%",
-          textAlign: "center",
-          fontSize: "18px",
-          padding: "15px",
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "5px",
-          minHeight: "80px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-        aria-live="polite"
-      >
-        {loading ? "Thinking..." : subtitles}
-      </div>
-      
-      {/* Error Message Display */}
-      {error && (
-        <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>
-      )}
-      
-      {/* Voice Input Button */}
-      <button
-        onClick={startListening}
-        disabled={listening || loading}
-        style={{
-          marginBottom: "20px",
-          backgroundColor: (listening || loading) ? "#888" : "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          padding: "12px 25px",
-          fontSize: "16px",
-          cursor: (listening || loading) ? "not-allowed" : "pointer",
-          transition: "background-color 0.3s ease",
-          boxShadow: "0 4px 6px rgba(0, 123, 255, 0.2)"
-        }}
-      >
-        {listening ? "Listening..." : "Speak to Me"}
-      </button>
-      
-      {/* Text Input Alternative */}
-      <form onSubmit={handleTextSubmit} style={{ width: "100%", maxWidth: "500px", display: "flex" }}>
-        <input
-          type="text"
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          placeholder="Or type your message here..."
+        {/* Error Message Display */}
+        {error && (
+          <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>
+        )}
+
+        {/* Voice Input Button */}
+        <button
+          onClick={startListening}
           disabled={listening || loading}
           style={{
-            flex: 1,
-            padding: "10px",
-            fontSize: "16px",
-            borderRadius: "5px 0 0 5px",
-            border: "1px solid #ccc",
-          }}
-        />
-        <button
-          type="submit"
-          disabled={listening || loading || !textInput.trim()}
-          style={{
-            padding: "10px 15px",
-            backgroundColor: (listening || loading || !textInput.trim()) ? "#888" : "#28a745",
-            color: "white",
+            marginBottom: "20px",
+            backgroundColor: (listening || loading) ? "#888" : "#007bff",
+            color: "#fff",
             border: "none",
-            borderRadius: "0 5px 5px 0",
-            cursor: (listening || loading || !textInput.trim()) ? "not-allowed" : "pointer",
+            borderRadius: "5px",
+            padding: "12px 25px",
+            fontSize: "16px",
+            cursor: (listening || loading) ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s ease",
+            boxShadow: "0 4px 6px rgba(0, 123, 255, 0.2)"
           }}
         >
-          Send
+          {listening ? "Listening..." : "Speak to Me"}
         </button>
-      </form>
+
+        {/* Text Input Alternative */}
+        <form onSubmit={handleTextSubmit} style={{ width: "100%", maxWidth: "500px", display: "flex" }}>
+          <input
+            type="text"
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            placeholder="Or type your message here..."
+            disabled={listening || loading}
+            style={{
+              flex: 1,
+              padding: "10px",
+              fontSize: "16px",
+              borderRadius: "5px 0 0 5px",
+              border: "1px solid #ccc",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={listening || loading || !textInput.trim()}
+            style={{
+              padding: "10px 15px",
+              backgroundColor: (listening || loading || !textInput.trim()) ? "#888" : "#28a745",
+              color: "white",
+              border: "none",
+              borderRadius: "0 5px 5px 0",
+              cursor: (listening || loading || !textInput.trim()) ? "not-allowed" : "pointer",
+            }}
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
+
   );
 }

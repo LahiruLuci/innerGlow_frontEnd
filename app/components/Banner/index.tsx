@@ -1,6 +1,15 @@
+'use client';
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 const Banner = () => {
+    const router = useRouter();
+
+    const handleGetStarted = () => {
+        router.push("/components/Avatar");
+    };
     return (
         <div className='mx-auto max-w-7xl my-10 sm:py-10 px-6 lg:px-8'>
             <div className='grid grid-cols-1 lg:grid-cols-2 my-16'>
@@ -20,9 +29,14 @@ const Banner = () => {
                         </h1>
                     </div>
                     <div className='my-7 text-center lg:text-start'>
-                        <button className='text-sm md:text-xl font-semibold hover:shadow-xl bg-blue text-white py-3 px-6 md:py-5 md:px-14 rounded-full hover:bg-hoblue'>
+                        <motion.button
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.96 }}
+                            className='text-sm md:text-xl font-semibold hover:shadow-xl bg-blue text-white py-3 px-6 md:py-5 md:px-14 rounded-full hover:bg-hoblue'
+                            onClick={handleGetStarted}
+                        >
                             Get Started
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
 

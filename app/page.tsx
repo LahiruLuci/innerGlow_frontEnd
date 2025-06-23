@@ -18,7 +18,7 @@ import Avatar from './components/Avatar';
 export default function Home() {
   return (
     <main>
-      <Avatar/>
+      {/* <Avatar/> */}
       <Banner />
       <Aboutus />
       {/* <Dedicated /> */}
@@ -29,10 +29,10 @@ export default function Home() {
       {/* <Featured /> */}
       <Manage />
       <FAQ />
-      <Testimonials />
-      <Articles />
+      {/* <Testimonials /> */}
+      {/* <Articles /> */}
       <Joinus />
-      <Insta />
+      {/* <Insta /> */}
     </main>
   )
 }

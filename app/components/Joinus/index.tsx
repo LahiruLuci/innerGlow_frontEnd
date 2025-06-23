@@ -1,13 +1,12 @@
-
 const Join = () => {
     return (
-        <div className="bg-joinus my-32">
+        <div className="bg-joinus my-32 pb-32">
             <div className='mx-auto max-w-2xl lg:max-w-7xl sm:py-4 lg:px-8'>
 
                 <div className="text-center">
                     <h3 className="text-blue text-lg font-normal tracking-widest">JOIN US</h3>
-                    <h2 className="text-4xl sm:text-6xl font-bold my-6 leading-10"> Take your business to <br /> the new level.</h2>
-                    <p className="text-lightblack text-base font-normal">Craven omni memoria patriae zombieland clairvius narcisse religionis sunt diri undead <br /> historiarum. Golums, zombies unrelenting et Raimi fascinati beheading.</p>
+                    <h2 className="text-3xl sm:text-6xl font-bold my-6 leading-10">Overcoming Social Phobia Together</h2>
+                    <p className="text-lightblack text-base font-normal">Social phobia, also known as social anxiety disorder, is more than just shyness. It can make everyday interactions feel overwhelming and cause intense fear of being judged or embarrassed in social situations. Remember, you are not alone—many people experience these feelings, and support is available to help you build confidence and connect with others.</p>
                 </div>
 
                 <div className="mx-auto max-w-4xl pt-5">
