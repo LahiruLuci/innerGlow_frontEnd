@@ -19,7 +19,7 @@ export default function Avatar() {
   const cameraPosition: [number, number, number] = [0, 1, 25]; 
   const lightIntensity: number = 0.7;
 
-  const SpeechKey = "GKEDI2f9XZ55KsFdm4Eu2deRIjqBvswbGOAhp6KnHGnJF4CJZLm1JQQJ99BBACYeBjFXJ3w3AAAYACOGMJWB";
+  const SpeechKey = "";
   const SpeechRegion = "eastus";
 
   const synthesizeSpeech = (text: string) => {
